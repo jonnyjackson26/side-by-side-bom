@@ -1,6 +1,7 @@
 from docx import Document
 import os
 from docx.shared import Inches
+from languages import languagesData
 
 leftLang = "english"
 rightLang = "spanish"
@@ -24,19 +25,23 @@ for section in sections:
     section.bottom_margin = Inches(0.5)
     section.left_margin = Inches(0.5)
     section.right_margin = Inches(0.5)
-    
+
 #title page
-document.add_heading("Side-by-Side Verses of the Book of Mormon", level=1)
+document.add_heading(f'{languagesData[rightLang]["book-of-mormon"]}',level=1)
+document.add_heading(f'{languagesData[rightLang]["another-testament-of-jesus-christ"]}',level=1)
+document.add_heading(f'{languagesData[leftLang]["book-of-mormon"]}',level=1)
+document.add_heading(f'{languagesData[rightLang]["another-testament-of-jesus-christ"]}',level=1)
+document.add_paragraph('Side-by-Side')
 document.add_paragraph(f'{rightLang} | {leftLang}')
 document.add_page_break()
 
 # Iterate through each book
 for book in books:
-    document.add_heading(book.replace("-", " ").title(), level=2)
+    document.add_heading(f"{languagesData[leftLang][book]} | {languagesData[rightLang][book]}", level=2)
 
     # Iterate through each chapter
     for chapter in range(1, chapters[book] + 1):
-        document.add_heading(f"Chapter {chapter}", level=3)
+        document.add_heading(f"{languagesData[leftLang]['chapter']} {chapter} | {languagesData[rightLang]['chapter']} {chapter}", level=3)
 
         eng_path = f'bom/bom-{leftLang}/{book}/{chapter}.txt'
         spa_path = f'bom/bom-{rightLang}/{book}/{chapter}.txt'
