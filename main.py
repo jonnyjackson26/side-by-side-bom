@@ -36,13 +36,26 @@ def customize_heading_style(doc, level, font_name='Arial', font_size=14, font_co
     font.name = font_name
     font.size = Pt(font_size)
     font.color.rgb = font_color
-
-
+    paragraph_format = style.paragraph_format
+    paragraph_format.alignment = 1  # 1 corresponds to CENTER alignment
 # Customize the heading styles
 customize_heading_style(document, level=1, font_name='Arial', font_size=18, font_color=RGBColor(0, 0, 0))
 customize_heading_style(document, level=2, font_name='Arial', font_size=16, font_color=RGBColor(0, 0, 0))
 customize_heading_style(document, level=3, font_name='Arial', font_size=14, font_color=RGBColor(0, 0, 0))
 
+#customisze chapter text
+def style_cell_text(cell, text, font_name='Arial', font_size=12, font_color=RGBColor(0, 0, 0)):
+    # Clear existing text
+    cell.text = ''
+    # Create a new paragraph for the cell
+    paragraph = cell.add_paragraph()
+    # Add a run to the paragraph
+    run = paragraph.add_run(text)
+    # Apply the styles
+    run.font.name = font_name
+    run.font.size = Pt(font_size)
+    run.font.color.rgb = font_color
+    paragraph.alignment = 1  # Center-align the paragraph # 1 corresponds to CENTER alignment
 
 #title page
 document.add_heading(f'{languagesData[rightLang]["book-of-mormon"]}',level=1)
@@ -59,7 +72,7 @@ for book in books:
 
     # Iterate through each chapter
     for chapter in range(1, chapters[book] + 1):
-        document.add_heading(f"{languagesData[leftLang]['chapter']} {chapter} | {languagesData[rightLang]['chapter']} {chapter}", level=3)
+        #document.add_heading(f"{languagesData[leftLang]['chapter']} {chapter} | {languagesData[rightLang]['chapter']} {chapter}", level=3)
 
         eng_path = f'bom/bom-{leftLang}/{book}/{chapter}.txt'
         spa_path = f'bom/bom-{rightLang}/{book}/{chapter}.txt'
@@ -74,6 +87,11 @@ for book in books:
 
             # Create a table with two columns
             table = document.add_table(rows=0, cols=2)
+            # Have the first row of the cols be "Chapter X" and "Capítulo X"
+            row_cells = table.add_row().cells
+            style_cell_text(row_cells[0], f"{languagesData[leftLang]['chapter']} {chapter}", font_name='Arial', font_size=12, font_color=RGBColor(255, 0, 0))  # Example styles
+            style_cell_text(row_cells[1], f"{languagesData[rightLang]['chapter']} {chapter}", font_name='Arial', font_size=12, font_color=RGBColor(0, 0, 255))  # Example styles
+
 
             # Ensure both files have the same number of verses
             min_len = min(len(english_verses), len(spanish_verses))
