@@ -1,7 +1,9 @@
 from docx import Document
 import os
 from docx.shared import Inches #margins
-from docx.enum.section import WD_ORIENTATION #landscape
+from docx.shared import Pt, RGBColor #styling headings
+
+
 from languages import languagesData
 
 leftLang = "english"
@@ -17,7 +19,7 @@ chapters = {
     "1-nephi": 6, "2-nephi": 6,"enos": 1, "moroni": 6
 }
 
-
+#my plan rn is to make this make a docx that you can print (portrait) and whole punch the ends and then spiral bound.
 document = Document() # Create a new Word document
 # smaller margins
 sections = document.sections
@@ -26,15 +28,21 @@ for section in sections:
     section.bottom_margin = Inches(0.5)
     section.left_margin = Inches(0.5)
     section.right_margin = Inches(0.5)
-    
-# Set the orientation to landscape
-section = document.sections[-1]
-section.orientation = WD_ORIENTATION.LANDSCAPE
 
-# Adjust the page width and height to match landscape mode
-new_width, new_height = section.page_height, section.page_width
-section.page_width = new_width
-section.page_height = new_height
+# Define a function to customize heading style
+def customize_heading_style(doc, level, font_name='Arial', font_size=14, font_color=RGBColor(0, 0, 0)):
+    style = doc.styles[f'Heading {level}']
+    font = style.font
+    font.name = font_name
+    font.size = Pt(font_size)
+    font.color.rgb = font_color
+
+
+# Customize the heading styles
+customize_heading_style(document, level=1, font_name='Arial', font_size=18, font_color=RGBColor(0, 0, 0))
+customize_heading_style(document, level=2, font_name='Arial', font_size=16, font_color=RGBColor(0, 0, 0))
+customize_heading_style(document, level=3, font_name='Arial', font_size=14, font_color=RGBColor(0, 0, 0))
+
 
 #title page
 document.add_heading(f'{languagesData[rightLang]["book-of-mormon"]}',level=1)
