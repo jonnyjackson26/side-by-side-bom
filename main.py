@@ -1,6 +1,7 @@
 from docx import Document
 import os
-from docx.shared import Inches
+from docx.shared import Inches #margins
+from docx.enum.section import WD_ORIENTATION #landscape
 from languages import languagesData
 
 leftLang = "english"
@@ -13,7 +14,7 @@ rightLang = "spanish"
 #}
 books = ["1-nephi", "2-nephi", "enos", "moroni"]
 chapters = {
-    "1-nephi": 22, "2-nephi": 33,"enos": 1, "moroni": 10
+    "1-nephi": 6, "2-nephi": 6,"enos": 1, "moroni": 6
 }
 
 
@@ -25,6 +26,15 @@ for section in sections:
     section.bottom_margin = Inches(0.5)
     section.left_margin = Inches(0.5)
     section.right_margin = Inches(0.5)
+    
+# Set the orientation to landscape
+section = document.sections[-1]
+section.orientation = WD_ORIENTATION.LANDSCAPE
+
+# Adjust the page width and height to match landscape mode
+new_width, new_height = section.page_height, section.page_width
+section.page_width = new_width
+section.page_height = new_height
 
 #title page
 document.add_heading(f'{languagesData[rightLang]["book-of-mormon"]}',level=1)
