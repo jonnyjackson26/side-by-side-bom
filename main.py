@@ -2,6 +2,8 @@ from docx import Document
 import os
 from docx.shared import Inches #margins
 from docx.shared import Pt, RGBColor #styling headings
+from docx.oxml.ns import qn #page nums
+from docx.oxml import OxmlElement #page nums
 
 
 from languages import languagesData
@@ -57,6 +59,14 @@ def style_cell_text(cell, text, font_name='Arial', font_size=12, font_color=RGBC
     run.font.color.rgb = font_color
     paragraph.alignment = 1  # Center-align the paragraph # 1 corresponds to CENTER alignment
 
+# Define a function to update the header with book and chapter information
+def update_header(section, book, chapter):
+    header = section.header
+    p = header.add_paragraph()
+    p.text = f"Book: {languagesData[leftLang][book]} | Chapter: {chapter}"
+    p.style.font.name = 'Arial'
+    p.style.font.size = Pt(12)
+
 #title page
 document.add_heading(f'{languagesData[rightLang]["book-of-mormon"]}',level=1)
 document.add_heading(f'{languagesData[rightLang]["another-testament-of-jesus-christ"]}',level=1)
@@ -103,6 +113,23 @@ for book in books:
                 row_cells[1].text = f"{i+1} {spanish_verses[i].strip()}"
         else:
             document.add_paragraph(f"Chapter {chapter} of {book} is missing in one or both languages.")
+        update_header(document.sections[-1], book, chapter)
+
+#page numbers
+def add_page_numbers(document):
+    sections = document.sections
+    for section in sections:
+        footer = section.footer
+        p = footer.add_paragraph()
+        p.alignment = 1  # Center-align the page number
+        run = p.add_run()
+        field = OxmlElement('w:fldSimple')
+        field.set(qn('w:instr'), 'PAGE')  # PAGE is the instruction for page number
+        run._element.append(field)
+
+# Add page numbers to the footer
+add_page_numbers(document)
+
 
 # Save the document
 document.save("side_by_side_bom.docx")
