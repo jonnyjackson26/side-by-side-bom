@@ -1,10 +1,11 @@
 from docx import Document
 import os
-from docx.shared import Inches # margins
-from docx.shared import Pt, RGBColor # styling headings
-from docx.oxml.ns import qn # page nums
-from docx.oxml import OxmlElement # page nums
+from docx.shared import Inches  # margins
+from docx.shared import Pt, RGBColor  # styling headings
+from docx.oxml.ns import qn  # page nums
+from docx.oxml import OxmlElement  # page nums
 from docx.enum.text import WD_ALIGN_PARAGRAPH  # For justification
+from docx.oxml import OxmlElement  # For horizontal line
 
 from languages import languagesData
 
@@ -68,6 +69,18 @@ def add_verses_to_table(row_cells, english_verse, spanish_verse):
     # Add Spanish verse without a new paragraph
     style_cell_text(row_cells[1], f"{spanish_verse}")
 
+def add_horizontal_line(doc):
+    p = doc.add_paragraph()
+    run = p.add_run()
+    hr = OxmlElement('w:pBdr')
+    bottom = OxmlElement('w:bottom')
+    bottom.set(qn('w:val'), 'single')
+    bottom.set(qn('w:sz'), '6')  # Border size
+    bottom.set(qn('w:space'), '1')
+    bottom.set(qn('w:color'), 'auto')
+    hr.append(bottom)
+    p._element.get_or_add_pPr().append(hr)
+
 # Title page
 document.add_heading(f'{languagesData[rightLang]["book-of-mormon"]}', level=1)
 document.add_heading(f'{languagesData[rightLang]["another-testament-of-jesus-christ"]}', level=1)
@@ -79,7 +92,9 @@ document.add_page_break()
 
 # Iterate through each book
 for book in books:
+    add_horizontal_line(document) # line before book title
     document.add_heading(f"{languagesData[leftLang][book]} | {languagesData[rightLang][book]}", level=2)
+    document.add_paragraph("") #space after book title
 
     # Iterate through each chapter
     for chapter in range(1, chapters[book] + 1):
@@ -109,9 +124,11 @@ for book in books:
             for i in range(min_len):
                 row_cells = table.add_row().cells
                 add_verses_to_table(row_cells, f"{i+1} {english_verses[i].strip()}", f"{i+1} {spanish_verses[i].strip()}")
-        else:
-            document.add_paragraph(f"Chapter {chapter} of {book} is missing in one or both languages.")
 
+            # Add a space after each chapter
+            document.add_paragraph("")
+        else:
+            document.add_paragraph("")
 
 # Page numbers
 def add_page_numbers(document):
