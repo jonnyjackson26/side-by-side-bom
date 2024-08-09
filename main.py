@@ -1,29 +1,25 @@
 from docx import Document
 import os
-from docx.shared import Inches #margins
-from docx.shared import Pt, RGBColor #styling headings
-from docx.oxml.ns import qn #page nums
-from docx.oxml import OxmlElement #page nums
-
+from docx.shared import Inches # margins
+from docx.shared import Pt, RGBColor # styling headings
+from docx.oxml.ns import qn # page nums
+from docx.oxml import OxmlElement # page nums
+from docx.enum.text import WD_ALIGN_PARAGRAPH  # For justification
 
 from languages import languagesData
 
 leftLang = "english"
 rightLang = "spanish"
-#books = ["1-nephi", "2-nephi", "jacob", "enos", "jarom", "omni", "words-of-mormon", "mosiah", "alma", "helaman", "3-nephi", "4-nephi", "mormon", "ether", "moroni"]
-#chapters = {
-#    "1-nephi": 22, "2-nephi": 33, "jacob": 7, "enos": 1, "jarom": 1, "omni": 1, "words-of-mormon": 1,
-#    "mosiah": 29, "alma": 63, "helaman": 16, "3-nephi": 30, "4-nephi": 1,
-#    "mormon": 9, "ether": 15, "moroni": 10
-#}
+
 books = ["1-nephi", "2-nephi", "enos", "moroni"]
 chapters = {
-    "1-nephi": 6, "2-nephi": 6,"enos": 1, "moroni": 6
+    "1-nephi": 6, "2-nephi": 6, "enos": 1, "moroni": 6
 }
 
-#my plan rn is to make this make a docx that you can print (portrait) and whole punch the ends and then spiral bound.
-document = Document() # Create a new Word document
-# smaller margins
+# Create a new Word document
+document = Document()
+
+# Set smaller margins
 sections = document.sections
 for section in sections:
     section.top_margin = Inches(0.5)
@@ -39,39 +35,44 @@ def customize_heading_style(doc, level, font_name='Arial', font_size=14, font_co
     font.size = Pt(font_size)
     font.color.rgb = font_color
     paragraph_format = style.paragraph_format
-    paragraph_format.alignment = 1  # 1 corresponds to CENTER alignment
+    paragraph_format.alignment = 1  # Center alignment
+
 # Customize the heading styles
 customize_heading_style(document, level=1, font_name='Arial', font_size=18, font_color=RGBColor(0, 0, 0))
 customize_heading_style(document, level=2, font_name='Arial', font_size=16, font_color=RGBColor(0, 0, 0))
 customize_heading_style(document, level=3, font_name='Arial', font_size=14, font_color=RGBColor(0, 0, 0))
 
-#customisze chapter text
-def style_cell_text(cell, text, font_name='Arial', font_size=12, font_color=RGBColor(0, 0, 0)):
+def style_cell_text(cell, text, font_name='Georgia', font_size=11, font_color=RGBColor(0, 0, 0)):
     # Clear existing text
     cell.text = ''
-    # Create a new paragraph for the cell
-    paragraph = cell.add_paragraph()
-    # Add a run to the paragraph
-    run = paragraph.add_run(text)
+
+    # Create a new run for the cell
+    run = cell.paragraphs[0].add_run(text.strip())
     # Apply the styles
     run.font.name = font_name
     run.font.size = Pt(font_size)
     run.font.color.rgb = font_color
-    paragraph.alignment = 1  # Center-align the paragraph # 1 corresponds to CENTER alignment
+    
+    # Set the alignment to justify
+    cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+    
+    # Adjust paragraph spacing
+    paragraph_format = cell.paragraphs[0].paragraph_format
+    paragraph_format.space_before = Pt(0)  # No space before the paragraph
+    paragraph_format.space_after = Pt(4)  # Small space after the paragraph
+    paragraph_format.line_spacing = Pt(12)  # Adjust line spacing (this can be fine-tuned)
 
-# Define a function to update the header with book and chapter information
-def update_header(section, book, chapter):
-    header = section.header
-    p = header.add_paragraph()
-    p.text = f"Book: {languagesData[leftLang][book]} | Chapter: {chapter}"
-    p.style.font.name = 'Arial'
-    p.style.font.size = Pt(12)
+def add_verses_to_table(row_cells, english_verse, spanish_verse):
+    # Add English verse without a new paragraph
+    style_cell_text(row_cells[0], f"{english_verse}")
+    # Add Spanish verse without a new paragraph
+    style_cell_text(row_cells[1], f"{spanish_verse}")
 
-#title page
-document.add_heading(f'{languagesData[rightLang]["book-of-mormon"]}',level=1)
-document.add_heading(f'{languagesData[rightLang]["another-testament-of-jesus-christ"]}',level=1)
-document.add_heading(f'{languagesData[leftLang]["book-of-mormon"]}',level=1)
-document.add_heading(f'{languagesData[rightLang]["another-testament-of-jesus-christ"]}',level=1)
+# Title page
+document.add_heading(f'{languagesData[rightLang]["book-of-mormon"]}', level=1)
+document.add_heading(f'{languagesData[rightLang]["another-testament-of-jesus-christ"]}', level=1)
+document.add_heading(f'{languagesData[leftLang]["book-of-mormon"]}', level=1)
+document.add_heading(f'{languagesData[rightLang]["another-testament-of-jesus-christ"]}', level=1)
 document.add_paragraph('Side-by-Side')
 document.add_paragraph(f'{rightLang} | {leftLang}')
 document.add_page_break()
@@ -82,8 +83,6 @@ for book in books:
 
     # Iterate through each chapter
     for chapter in range(1, chapters[book] + 1):
-        #document.add_heading(f"{languagesData[leftLang]['chapter']} {chapter} | {languagesData[rightLang]['chapter']} {chapter}", level=3)
-
         eng_path = f'bom/bom-{leftLang}/{book}/{chapter}.txt'
         spa_path = f'bom/bom-{rightLang}/{book}/{chapter}.txt'
         
@@ -97,11 +96,11 @@ for book in books:
 
             # Create a table with two columns
             table = document.add_table(rows=0, cols=2)
-            # Have the first row of the cols be "Chapter X" and "Capítulo X"
-            row_cells = table.add_row().cells
-            style_cell_text(row_cells[0], f"{languagesData[leftLang]['chapter']} {chapter}", font_name='Arial', font_size=12, font_color=RGBColor(255, 0, 0))  # Example styles
-            style_cell_text(row_cells[1], f"{languagesData[rightLang]['chapter']} {chapter}", font_name='Arial', font_size=12, font_color=RGBColor(0, 0, 255))  # Example styles
 
+            # Have the first row of the cols be "Chapter X" and "Chapitre X"
+            row_cells = table.add_row().cells
+            style_cell_text(row_cells[0], f"{languagesData[leftLang]['chapter']} {chapter}", font_name='Daytona', font_size=12, font_color=RGBColor(0, 0, 0))
+            style_cell_text(row_cells[1], f"{languagesData[rightLang]['chapter']} {chapter}", font_name='Daytona', font_size=12, font_color=RGBColor(0, 0, 0))
 
             # Ensure both files have the same number of verses
             min_len = min(len(english_verses), len(spanish_verses))
@@ -109,13 +108,12 @@ for book in books:
             # Add verses to the table with verse numbers
             for i in range(min_len):
                 row_cells = table.add_row().cells
-                row_cells[0].text = f"{i+1} {english_verses[i].strip()}"
-                row_cells[1].text = f"{i+1} {spanish_verses[i].strip()}"
+                add_verses_to_table(row_cells, f"{i+1} {english_verses[i].strip()}", f"{i+1} {spanish_verses[i].strip()}")
         else:
             document.add_paragraph(f"Chapter {chapter} of {book} is missing in one or both languages.")
-        update_header(document.sections[-1], book, chapter)
 
-#page numbers
+
+# Page numbers
 def add_page_numbers(document):
     sections = document.sections
     for section in sections:
@@ -129,7 +127,6 @@ def add_page_numbers(document):
 
 # Add page numbers to the footer
 add_page_numbers(document)
-
 
 # Save the document
 document.save("side_by_side_bom.docx")
