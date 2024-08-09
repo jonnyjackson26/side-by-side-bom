@@ -1,11 +1,11 @@
-languagesData = {
+languagesData= {
     "english": {
         "book-of-mormon": "The Book of Mormon",
         "another-testament-of-jesus-christ": "Another Testament of Jesus Christ",
         "english": "english",
         "french": "french",
         "spanish": "spanish",
-        "german": "german",  # end of languages
+        "german": "german",
         "1-nephi": "1 Nephi",
         "2-nephi": "2 Nephi",
         "jacob": "Jacob",
@@ -20,16 +20,17 @@ languagesData = {
         "4-nephi": "4 Nephi",
         "mormon": "Mormon",
         "ether": "Ether",
-        "moroni": "Moroni",  # end of books
+        "moroni": "Moroni",
         "chapter": "Chapter",
+        "side-by-side-version": "Side by Side Version"
     },
     "spanish": {
         "book-of-mormon": "El Libro de Mormón",
         "another-testament-of-jesus-christ": "Otro Testamento de Jesucristo",
         "english": "ingles",
         "french": "frances",
-        "spanish": "espanol",
-        "german": "aleman",  # end of languages
+        "spanish": "español",
+        "german": "aleman",
         "1-nephi": "1 Nefi",
         "2-nephi": "2 Nefi",
         "jacob": "Jacob",
@@ -44,8 +45,9 @@ languagesData = {
         "4-nephi": "4 Nefi",
         "mormon": "Mormón",
         "ether": "Éter",
-        "moroni": "Moroni",  # end of books
+        "moroni": "Moroni",
         "chapter": "Capítulo",
+        "side-by-side-version": "Versión Lado a Lado"
     },
     "french": {
         "book-of-mormon": "Le Livre de Mormon",
@@ -53,7 +55,7 @@ languagesData = {
         "english": "anglais",
         "french": "français",
         "spanish": "espagnol",
-        "german": "allemand",  # end of languages
+        "german": "allemand",
         "1-nephi": "1 Néphi",
         "2-nephi": "2 Néphi",
         "jacob": "Jacob",
@@ -68,8 +70,9 @@ languagesData = {
         "4-nephi": "4 Néphi",
         "mormon": "Mormon",
         "ether": "Éther",
-        "moroni": "Moroni",  # end of books
+        "moroni": "Moroni",
         "chapter": "Chapitre",
+        "side-by-side-version": "Version Côte à Côte"
     },
     "german": {
         "book-of-mormon": "Das Buch Mormon",
@@ -77,7 +80,7 @@ languagesData = {
         "english": "englisch",
         "french": "französisch",
         "spanish": "spanisch",
-        "german": "deutsch",  # end of languages
+        "german": "deutsch",
         "1-nephi": "1 Nephi",
         "2-nephi": "2 Nephi",
         "jacob": "Jakob",
@@ -92,7 +95,8 @@ languagesData = {
         "4-nephi": "4 Nephi",
         "mormon": "Mormon",
         "ether": "Ether",
-        "moroni": "Moroni",  # end of books
+        "moroni": "Moroni",
         "chapter": "Kapitel",
-    },
+        "side-by-side-version": "Nebeneinander Version"
+    }
 }
