@@ -187,25 +187,58 @@ for book in books:
                     left_border.set(qn('w:space'), '0')
                     borders.append(left_border)
 
-            # Have the first row of the columns be "Chapter X" and "Capítulo X"
-            row_cells = table.add_row().cells
-            style_cell_text(row_cells[0], f"{languagesData[leftLang]['chapter'].upper()} {chapter}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
-            style_cell_text(row_cells[1], f"{languagesData[rightLang]['chapter'].upper()} {chapter}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
+            
+            if book=="1-nephi":
+                if chapter==1:
+                    # The First Book of Nephi
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"{english_verses[0].strip().upper()}", font_name='Times New Roman', font_size=15, alignment=WD_ALIGN_PARAGRAPH.CENTER)
+                    style_cell_text(row_cells[1], f"{spanish_verses[0].strip().upper()}", font_name='Times New Roman', font_size=15, alignment=WD_ALIGN_PARAGRAPH.CENTER)
+                    # His Reign and Ministry
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"{english_verses[1].strip().upper()}", font_name='Times New Roman', font_size=10, alignment=WD_ALIGN_PARAGRAPH.CENTER)
+                    style_cell_text(row_cells[1], f"{spanish_verses[1].strip().upper()}", font_name='Times New Roman', font_size=10, alignment=WD_ALIGN_PARAGRAPH.CENTER)
+                    # BOOK INTRO (An account of Lehi and his wife Sariah, a...)
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"{english_verses[2].strip()}", font_name='Times New Roman', font_size=12)
+                    style_cell_text(row_cells[1], f"{spanish_verses[2].strip()}", font_name='Times New Roman', font_size=12)
+                    #space
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], "", font_name='Times New Roman', font_size=5)
+                    style_cell_text(row_cells[1], "", font_name='Times New Roman', font_size=5)
+                    #CHAPTER 1
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"{languagesData[leftLang]['chapter'].upper()} {chapter}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
+                    style_cell_text(row_cells[1], f"{languagesData[rightLang]['chapter'].upper()} {chapter}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
+                    #chapter heading 
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"{english_verses[3].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+                    style_cell_text(row_cells[1], f"{spanish_verses[3].strip()}", font_name='Times New Roman', font_size=12, italic=True)
 
-            # Ensure both files have the same number of verses
-            min_len = min(len(english_verses), len(spanish_verses))
 
-            # Add chapter headings (the 0th index of the verses list is added with italics)
-            x = 0  # Number of lines that are not verses (1 Nephi 1 has a bunch)
-            row_cells = table.add_row().cells
-            style_cell_text(row_cells[0], f"{english_verses[0].strip()}", font_name='Times New Roman', font_size=12, italic=True)
-            style_cell_text(row_cells[1], f"{spanish_verses[0].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+                    # Add verses to the table with verse numbers
+                    for i in range(4, len(english_verses)): #NOTE that english verses should be the same length as spanish verses
+                        row_cells = table.add_row().cells
+                        style_cell_text(row_cells[0], f"{i-3} {english_verses[i].strip()}")
+                        style_cell_text(row_cells[1], f"{i-3} {spanish_verses[i].strip()}")
 
-            # Add verses to the table with verse numbers
-            for i in range(1, min_len):
-                row_cells = table.add_row().cells
-                style_cell_text(row_cells[0], f"{i+x} {english_verses[i].strip()}")
-                style_cell_text(row_cells[1], f"{i+x} {spanish_verses[i].strip()}")
+                else: #normal chapter with just one line of chapter intro and the other lines are verses
+                    # Have the first row of the columns be "Chapter X" and "Capítulo X"
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"{languagesData[leftLang]['chapter'].upper()} {chapter}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
+                    style_cell_text(row_cells[1], f"{languagesData[rightLang]['chapter'].upper()} {chapter}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
+
+                    # Add chapter headings (the 0th index of the verses list is added with italics)
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"{english_verses[0].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+                    style_cell_text(row_cells[1], f"{spanish_verses[0].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+
+                    # Add verses to the table with verse numbers
+                    for i in range(1, len(english_verses)): #NOTE that english verses should be the same length as spanish verses
+                        row_cells = table.add_row().cells
+                        style_cell_text(row_cells[0], f"{i} {english_verses[i].strip()}")
+                        style_cell_text(row_cells[1], f"{i} {spanish_verses[i].strip()}")
+
 
             # Add a space after each chapter
             document.add_paragraph("")
