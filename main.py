@@ -29,6 +29,7 @@ for section in sections:
     section.bottom_margin = Inches(0.5)
     section.left_margin = Inches(0.2)
     section.right_margin = Inches(0.2)
+    section.footer_distance = Inches(0.2)  # make footer with page number smaller 
 
 # Define a function to customize heading style
 def customize_heading_style(doc, level, font_name='Arial', font_size=14, font_color=RGBColor(0, 0, 0)):
@@ -133,7 +134,7 @@ def add_title_page(doc):
     # Page break
     doc.add_page_break()
 
-add_title_page(document)
+#add_title_page(document)
 
 # Iterate through each book
 for book in books:
@@ -143,16 +144,16 @@ for book in books:
 
     # Iterate through each chapter
     for chapter in range(1, chapters[book] + 1):
-        eng_path = f'bom/bom-{leftLang}/{book}/{chapter}.txt'
-        spa_path = f'bom/bom-{rightLang}/{book}/{chapter}.txt'
+        eng_path = f'bom2/bom-{leftLang}/{book}/{chapter}.txt'
+        spa_path = f'bom2/bom-{rightLang}/{book}/{chapter}.txt'
         
         # Check if both files exist
         if os.path.exists(eng_path) and os.path.exists(spa_path):
             with open(eng_path, 'r', encoding='utf-8') as eng_file:
-                english_verses = eng_file.readlines()
+                english_verses = [line.strip() for line in eng_file.readlines() if line.strip()] #removes new linee characters
 
             with open(spa_path, 'r', encoding='utf-8') as spa_file:
-                spanish_verses = spa_file.readlines()
+                 spanish_verses = [line.strip() for line in spa_file.readlines() if line.strip()] #removes new linee characters
 
             # Create a table with two columns
             table = document.add_table(rows=0, cols=2)
