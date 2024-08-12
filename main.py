@@ -31,22 +31,7 @@ for section in sections:
     section.right_margin = Inches(0.2)
     section.footer_distance = Inches(0.2)  # make footer with page number smaller 
 
-# Define a function to customize heading style
-def customize_heading_style(doc, level, font_name='Arial', font_size=14, font_color=RGBColor(0, 0, 0)):
-    style = doc.styles[f'Heading {level}']
-    font = style.font
-    font.name = font_name
-    font.size = Pt(font_size)
-    font.color.rgb = font_color
-    paragraph_format = style.paragraph_format
-    paragraph_format.alignment = 1  # Center alignment
-
-# Customize the heading styles
-customize_heading_style(document, level=1, font_name='Arial', font_size=18, font_color=RGBColor(0, 0, 0))
-customize_heading_style(document, level=2, font_name='Arial', font_size=16, font_color=RGBColor(0, 0, 0))
-customize_heading_style(document, level=3, font_name='Arial', font_size=14, font_color=RGBColor(0, 0, 0))
-
-def style_cell_text(cell, text, font_name='Georgia', font_size=11, font_color=RGBColor(0, 0, 0)):
+def style_cell_text(cell, text, font_name='Georgia', font_size=11, alignment= WD_ALIGN_PARAGRAPH.JUSTIFY, bold=False, italic=False):
     # Clear existing text
     cell.text = ''
     # Create a new run for the cell
@@ -54,20 +39,16 @@ def style_cell_text(cell, text, font_name='Georgia', font_size=11, font_color=RG
     # Apply the styles
     run.font.name = font_name
     run.font.size = Pt(font_size)
-    run.font.color.rgb = font_color
+    run.font.color.rgb = RGBColor(0, 0, 0)
+    run.bold = bold  
+    run.italic = italic 
     # Set the alignment to justify
-    cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+    cell.paragraphs[0].alignment = alignment
     # Adjust paragraph spacing
     paragraph_format = cell.paragraphs[0].paragraph_format
     paragraph_format.space_before = Pt(0)  # No space before the paragraph
     paragraph_format.space_after = Pt(4)  # Small space after the paragraph
     paragraph_format.line_spacing = Pt(12)  # Adjust line spacing (this can be fine-tuned)
-
-def add_verses_to_table(row_cells, english_verse, spanish_verse):
-    # Add English verse without a new paragraph
-    style_cell_text(row_cells[0], f"{english_verse}")
-    # Add Spanish verse without a new paragraph
-    style_cell_text(row_cells[1], f"{spanish_verse}")
 
 def add_horizontal_line(doc):
     p = doc.add_paragraph()
@@ -138,8 +119,8 @@ def add_title_page(doc):
 
 # Iterate through each book
 for book in books:
-    add_horizontal_line(document) # line before book title
-    document.add_heading(f"{languagesData[leftLang][book]} | {languagesData[rightLang][book]}", level=2)
+    document.add_heading(f"{languagesData[leftLang][book].upper()} | {languagesData[rightLang][book].upper()}", level=2)
+    add_horizontal_line(document) # line after book title
     document.add_paragraph("") #space after book title
 
     # Iterate through each chapter
@@ -160,16 +141,22 @@ for book in books:
 
             # Have the first row of the cols be "Chapter X" and "Chapitre X"
             row_cells = table.add_row().cells
-            style_cell_text(row_cells[0], f"{languagesData[leftLang]['chapter']} {chapter}", font_name='Daytona', font_size=12, font_color=RGBColor(0, 0, 0))
-            style_cell_text(row_cells[1], f"{languagesData[rightLang]['chapter']} {chapter}", font_name='Daytona', font_size=12, font_color=RGBColor(0, 0, 0))
+            style_cell_text(row_cells[0], f"{languagesData[leftLang]['chapter'].upper()} {chapter}", font_name='Daytona', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER)
+            style_cell_text(row_cells[1], f"{languagesData[rightLang]['chapter'].upper()} {chapter}", font_name='Daytona', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER)
 
             # Ensure both files have the same number of verses
             min_len = min(len(english_verses), len(spanish_verses))
 
+            #add chapter headings (the 0th index of the verses list is added with italics)
+            row_cells = table.add_row().cells
+            style_cell_text(row_cells[0], f"{1} {english_verses[0].strip()}", font_name='Georgia', font_size=11, italic=True)
+            style_cell_text(row_cells[1], f"{1} {spanish_verses[0].strip()}", font_name='Georgia', font_size=11, italic=True)
+
             # Add verses to the table with verse numbers
-            for i in range(min_len):
+            for i in range(1,min_len):
                 row_cells = table.add_row().cells
-                add_verses_to_table(row_cells, f"{i+1} {english_verses[i].strip()}", f"{i+1} {spanish_verses[i].strip()}")
+                style_cell_text(row_cells[0], f"{i+1} {english_verses[i].strip()}") # Add English verse without a new paragraph
+                style_cell_text(row_cells[1], f"{i+1} {spanish_verses[i].strip()}") # Add Spanish verse without a new paragraph
 
             # Add a space after each chapter
             document.add_paragraph("")
