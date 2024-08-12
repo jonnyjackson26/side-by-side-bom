@@ -1,5 +1,6 @@
 from docx import Document
 import os
+import subprocess #for opening document on wsl ubuntu
 from docx.shared import Inches  # margins
 from docx.shared import Pt, RGBColor  # styling headings
 from docx.oxml.ns import qn  # page nums
@@ -7,14 +8,15 @@ from docx.oxml import OxmlElement  # page nums
 from docx.enum.text import WD_ALIGN_PARAGRAPH  # For justification
 from docx.oxml import OxmlElement  # For horizontal line
 
+
 from languages import languagesData
 
 leftLang = "english"
 rightLang = "spanish"
 
-books = ["1-nephi", "2-nephi", "enos", "moroni"]
+books = ["1-nephi", "enos", "moroni"]
 chapters = {
-    "1-nephi": 6, "2-nephi": 6, "enos": 1, "moroni": 6
+    "1-nephi": 6, "enos": 1, "moroni": 6
 }
 
 # Create a new Word document
@@ -25,8 +27,8 @@ sections = document.sections
 for section in sections:
     section.top_margin = Inches(0.5)
     section.bottom_margin = Inches(0.5)
-    section.left_margin = Inches(0.5)
-    section.right_margin = Inches(0.5)
+    section.left_margin = Inches(0.2)
+    section.right_margin = Inches(0.2)
 
 # Define a function to customize heading style
 def customize_heading_style(doc, level, font_name='Arial', font_size=14, font_color=RGBColor(0, 0, 0)):
@@ -78,59 +80,60 @@ def add_horizontal_line(doc):
     hr.append(bottom)
     p._element.get_or_add_pPr().append(hr)
 
-# Title page
-document.add_paragraph("\n\n\n") # Add spacing before the title
-# Add the main title in large, bold font
-main_title = document.add_paragraph()
-main_title.alignment = 1  # Center alignment
-run = main_title.add_run(f'{languagesData[rightLang]["book-of-mormon"]}')
-run.font.name = 'Times New Roman'
-run.font.size = Pt(36)
-run.bold = True
-# Add subtitle in a slightly smaller font and italics
-subtitle = document.add_paragraph()
-subtitle.alignment = 1  # Center alignment
-run = subtitle.add_run(f'{languagesData[rightLang]["another-testament-of-jesus-christ"]}')
-run.font.name = 'Times New Roman'
-run.font.size = Pt(24)
-run.italic = True
-# Add spacing between title and subtitle
-document.add_paragraph("\n\n")
-# Book of Mormon in second langaueg
-second_title = document.add_paragraph()
-second_title.alignment = 1  # Center alignment
-run = second_title.add_run(f'{languagesData[leftLang]["book-of-mormon"]}')
-run.font.name = 'Times New Roman'
-run.font.size = Pt(36)
-run.bold = True
-# Add another subtitle for the translation language in a smaller font
-subtitle_3 = document.add_paragraph()
-subtitle_3.alignment = 1  # Center alignment
-run = subtitle_3.add_run(f'{languagesData[leftLang]["another-testament-of-jesus-christ"]}')
-run.font.name = 'Times New Roman'
-run.font.size = Pt(24)
-run.italic = True
-# Add more spacing before the side-by-side description
-document.add_paragraph("\n\n")
-# Add a description below the titles
-description = document.add_paragraph()
-description.alignment = 1  # Center alignment
-run = description.add_run(f'{languagesData[leftLang]["side-by-side-version"]}')
-run.font.name = 'Arial'
-run.font.size = Pt(18)
-run.bold = True
-# Add language pairing description in smaller font
-language_pair = document.add_paragraph()
-language_pair.alignment = 1  # Center alignment
-run = language_pair.add_run(f'{languagesData[leftLang][leftLang].capitalize()} | {languagesData[rightLang][rightLang].capitalize()}')
-run.font.name = 'Arial'
-run.font.size = Pt(16)
-# Add more spacing before the page break
-document.add_paragraph("\n\n\n")
-# Page break
-document.add_page_break()
+def add_title_page(doc):
+    # Title page
+    doc.add_paragraph("\n\n\n") # Add spacing before the title
+    # Add the main title in large, bold font
+    main_title = doc.add_paragraph()
+    main_title.alignment = 1  # Center alignment
+    run = main_title.add_run(f'{languagesData[rightLang]["book-of-mormon"]}')
+    run.font.name = 'Times New Roman'
+    run.font.size = Pt(36)
+    run.bold = True
+    # Add subtitle in a slightly smaller font and italics
+    subtitle = doc.add_paragraph()
+    subtitle.alignment = 1  # Center alignment
+    run = subtitle.add_run(f'{languagesData[rightLang]["another-testament-of-jesus-christ"]}')
+    run.font.name = 'Times New Roman'
+    run.font.size = Pt(24)
+    run.italic = True
+    # Add spacing between title and subtitle
+    doc.add_paragraph("\n\n")
+    # Book of Mormon in second langaueg
+    second_title = doc.add_paragraph()
+    second_title.alignment = 1  # Center alignment
+    run = second_title.add_run(f'{languagesData[leftLang]["book-of-mormon"]}')
+    run.font.name = 'Times New Roman'
+    run.font.size = Pt(36)
+    run.bold = True
+    # Add another subtitle for the translation language in a smaller font
+    subtitle_3 = doc.add_paragraph()
+    subtitle_3.alignment = 1  # Center alignment
+    run = subtitle_3.add_run(f'{languagesData[leftLang]["another-testament-of-jesus-christ"]}')
+    run.font.name = 'Times New Roman'
+    run.font.size = Pt(24)
+    run.italic = True
+    # Add more spacing before the side-by-side description
+    doc.add_paragraph("\n\n")
+    # Add a description below the titles
+    description = doc.add_paragraph()
+    description.alignment = 1  # Center alignment
+    run = description.add_run(f'{languagesData[leftLang]["side-by-side-version"]}')
+    run.font.name = 'Arial'
+    run.font.size = Pt(18)
+    run.bold = True
+    # Add language pairing description in smaller font
+    language_pair = doc.add_paragraph()
+    language_pair.alignment = 1  # Center alignment
+    run = language_pair.add_run(f'{languagesData[leftLang][leftLang].capitalize()} | {languagesData[rightLang][rightLang].capitalize()}')
+    run.font.name = 'Arial'
+    run.font.size = Pt(16)
+    # Add more spacing before the page break
+    doc.add_paragraph("\n\n\n")
+    # Page break
+    doc.add_page_break()
 
-
+add_title_page(document)
 
 # Iterate through each book
 for book in books:
@@ -189,3 +192,4 @@ add_page_numbers(document)
 
 # Save the document
 document.save("side_by_side_bom.docx")
+subprocess.call(['powershell.exe', 'Start-Process', 'side_by_side_bom.docx']) #opens doc
