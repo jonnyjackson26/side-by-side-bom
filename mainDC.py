@@ -9,7 +9,7 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH  # For justification
 from languages import languagesData
 
 leftLang = "english"
-rightLang = "spanish"
+rightLang = "english"
 numOfSections=138
 
 document = Document()  # Create a new Word document
@@ -136,14 +136,14 @@ def add_title_page(doc):
 
 #add_title_page(document) # Add title page
 
-# Iterate through each book
-for chapter in range(numOfSections):
+#introduction
+def create_introduction():
     add_horizontal_line(document)  # Line after book title
     document.add_paragraph("")  # Space after book title
 
-    eng_path = f'dc/dc-{leftLang}/{chapter}.txt'
-    spa_path = f'dc/dc-{rightLang}/{chapter}.txt'
-    
+    eng_path = f'dc-{leftLang}/{0}.txt' #will need to put dc/ before
+    spa_path = f'dc-{rightLang}/{0}.txt'
+
     # Check if both files exist
     if os.path.exists(eng_path) and os.path.exists(spa_path):
         with open(eng_path, 'r', encoding='utf-8') as eng_file:
@@ -180,33 +180,334 @@ for chapter in range(numOfSections):
                 left_border.set(qn('w:space'), '0')
                 borders.append(left_border)
 
-       
+        
 
             add_horizontal_line(document)  # Line after chapter
         
-        #CHAPTER 1
+        #introduction
         row_cells = table.add_row().cells
-        style_cell_text(row_cells[0], f"{languagesData[leftLang]['chapter'].upper()} {chapter}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
-        style_cell_text(row_cells[1], f"{languagesData[rightLang]['chapter'].upper()} {chapter}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
-        # heading
-        row_cells = table.add_row().cells
-        style_cell_text(row_cells[0], f"{english_verses[0].strip()}", font_name='Times New Roman', font_size=12, italic=True)
-        style_cell_text(row_cells[1], f"{spanish_verses[0].strip()}", font_name='Times New Roman', font_size=12, italic=True)
-        # breakdown
-        row_cells = table.add_row().cells
-        style_cell_text(row_cells[0], f"{english_verses[1].strip()}", font_name='Times New Roman', font_size=12, italic=True)
-        style_cell_text(row_cells[1], f"{spanish_verses[1].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+        style_cell_text(row_cells[0], f"{english_verses[0].upper()}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
+        style_cell_text(row_cells[1], f"{spanish_verses[0].upper()}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
         #space
         row_cells = table.add_row().cells
         style_cell_text(row_cells[0], "", font_name='Times New Roman', font_size=5)
         style_cell_text(row_cells[1], "", font_name='Times New Roman', font_size=5)
         
-        # Add verses to the table with verse numbers
-        for i in range(2, len(english_verses)): #NOTE that english verses should be the same length as spanish verses
+        # Add paragraphs without verse numvers
+        for i in range(1, 12): #NOTE that english verses should be the same length as spanish verses
             row_cells = table.add_row().cells
-            style_cell_text(row_cells[0], f"{i-1} {english_verses[i].strip()}")
-            style_cell_text(row_cells[1], f"{i-1} {spanish_verses[i].strip()}")
+            style_cell_text(row_cells[0], f"    {english_verses[i].strip()}")
+            style_cell_text(row_cells[1], f"    {spanish_verses[i].strip()}")
+        #space
+        row_cells = table.add_row().cells
+        style_cell_text(row_cells[0], "", font_name='Times New Roman', font_size=5)
+        style_cell_text(row_cells[1], "", font_name='Times New Roman', font_size=5)
+        #Testimony of the Twelve Apostles to the Truth of the Book of Doctrine and Covenants
+        row_cells = table.add_row().cells
+        style_cell_text(row_cells[0], f"{english_verses[13].upper()}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
+        style_cell_text(row_cells[1], f"{spanish_verses[13].upper()}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
+        #italiced paragraph
+        row_cells = table.add_row().cells
+        style_cell_text(row_cells[0], f"    {english_verses[14]}", font_name='Times New Roman', font_size=12, italic=True)
+        style_cell_text(row_cells[1], f"    {spanish_verses[14]}", font_name='Times New Roman', font_size=12, italic=True)
+        # Add paragraphs without verse numvers
+        for i in range(14, len(english_verses)): #NOTE that english verses should be the same length as spanish verses
+            row_cells = table.add_row().cells
+            style_cell_text(row_cells[0], f"    {english_verses[i].strip()}")
+            style_cell_text(row_cells[1], f"    {spanish_verses[i].strip()}")
 
+def create_sections():
+    # Iterate through each section
+    for chapter in range(1,numOfSections):
+        add_horizontal_line(document)  # Line after book title
+        document.add_paragraph("")  # Space after book title
+
+        eng_path = f'dc-{leftLang}/{chapter}.txt' #will need to put dc/ before
+        spa_path = f'dc-{rightLang}/{chapter}.txt'
+        
+        # Check if both files exist
+        if os.path.exists(eng_path) and os.path.exists(spa_path):
+            with open(eng_path, 'r', encoding='utf-8') as eng_file:
+                english_verses = [line.strip() for line in eng_file.readlines() if line.strip()]  # Removes new line characters
+
+            with open(spa_path, 'r', encoding='utf-8') as spa_file:
+                spanish_verses = [line.strip() for line in spa_file.readlines() if line.strip()]  # Removes new line characters
+
+            # Create a table with two columns
+            table = document.add_table(rows=0, cols=2)
+
+            # Add borders to the columns to create a vertical line between them
+            for i, cell in enumerate(table.columns[0].cells + table.columns[1].cells):
+                if cell._element.getparent().index(cell._element) % 2 == 0:  # First column
+                    cell._element.get_or_add_tcPr().append(OxmlElement('w:tcBorders'))
+                    borders = cell._element.find(qn('w:tcBorders'))
+                    if borders is None:
+                        borders = OxmlElement('w:tcBorders')
+                        cell._element.get_or_add_tcPr().append(borders)
+                    right_border = OxmlElement('w:right')
+                    right_border.set(qn('w:val'), 'single')
+                    right_border.set(qn('w:sz'), '4')
+                    right_border.set(qn('w:space'), '0')
+                    borders.append(right_border)
+                else:  # Second column
+                    cell._element.get_or_add_tcPr().append(OxmlElement('w:tcBorders'))
+                    borders = cell._element.find(qn('w:tcBorders'))
+                    if borders is None:
+                        borders = OxmlElement('w:tcBorders')
+                        cell._element.get_or_add_tcPr().append(borders)
+                    left_border = OxmlElement('w:left')
+                    left_border.set(qn('w:val'), 'single')
+                    left_border.set(qn('w:sz'), '4')
+                    left_border.set(qn('w:space'), '0')
+                    borders.append(left_border)
+
+        
+
+                add_horizontal_line(document)  # Line after chapter
+            
+            #CHAPTER 1
+            row_cells = table.add_row().cells
+            style_cell_text(row_cells[0], f"{languagesData[leftLang]['chapter'].upper()} {chapter}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
+            style_cell_text(row_cells[1], f"{languagesData[rightLang]['chapter'].upper()} {chapter}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
+            # heading
+            row_cells = table.add_row().cells
+            style_cell_text(row_cells[0], f"{english_verses[0].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+            style_cell_text(row_cells[1], f"{spanish_verses[0].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+            # breakdown
+            row_cells = table.add_row().cells
+            style_cell_text(row_cells[0], f"{english_verses[1].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+            style_cell_text(row_cells[1], f"{spanish_verses[1].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+            #space
+            row_cells = table.add_row().cells
+            style_cell_text(row_cells[0], "", font_name='Times New Roman', font_size=5)
+            style_cell_text(row_cells[1], "", font_name='Times New Roman', font_size=5)
+            
+            # Add verses to the table with verse numbers
+            for i in range(2, len(english_verses)): #NOTE that english verses should be the same length as spanish verses
+                row_cells = table.add_row().cells
+                style_cell_text(row_cells[0], f"{i-1} {english_verses[i].strip()}")
+                style_cell_text(row_cells[1], f"{i-1} {spanish_verses[i].strip()}")
+
+def create_od1():
+    add_horizontal_line(document)  # Line after book title
+    document.add_paragraph("")  # Space after book title
+
+    eng_path = f'dc-{leftLang}/od{1}.txt' #will need to put dc/ before
+    spa_path = f'dc-{rightLang}/od{1}.txt'
+
+    # Check if both files exist
+    if os.path.exists(eng_path) and os.path.exists(spa_path):
+        with open(eng_path, 'r', encoding='utf-8') as eng_file:
+            english_verses = [line.strip() for line in eng_file.readlines() if line.strip()]  # Removes new line characters
+
+        with open(spa_path, 'r', encoding='utf-8') as spa_file:
+            spanish_verses = [line.strip() for line in spa_file.readlines() if line.strip()]  # Removes new line characters
+
+        # Create a table with two columns
+        table = document.add_table(rows=0, cols=2)
+
+        # Add borders to the columns to create a vertical line between them
+        for i, cell in enumerate(table.columns[0].cells + table.columns[1].cells):
+            if cell._element.getparent().index(cell._element) % 2 == 0:  # First column
+                cell._element.get_or_add_tcPr().append(OxmlElement('w:tcBorders'))
+                borders = cell._element.find(qn('w:tcBorders'))
+                if borders is None:
+                    borders = OxmlElement('w:tcBorders')
+                    cell._element.get_or_add_tcPr().append(borders)
+                right_border = OxmlElement('w:right')
+                right_border.set(qn('w:val'), 'single')
+                right_border.set(qn('w:sz'), '4')
+                right_border.set(qn('w:space'), '0')
+                borders.append(right_border)
+            else:  # Second column
+                cell._element.get_or_add_tcPr().append(OxmlElement('w:tcBorders'))
+                borders = cell._element.find(qn('w:tcBorders'))
+                if borders is None:
+                    borders = OxmlElement('w:tcBorders')
+                    cell._element.get_or_add_tcPr().append(borders)
+                left_border = OxmlElement('w:left')
+                left_border.set(qn('w:val'), 'single')
+                left_border.set(qn('w:sz'), '4')
+                left_border.set(qn('w:space'), '0')
+                borders.append(left_border)
+
+        
+
+            add_horizontal_line(document)  # Line after chapter
+        
+        #offical declatation 1
+        row_cells = table.add_row().cells
+        style_cell_text(row_cells[0], f"{english_verses[0].upper()}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
+        style_cell_text(row_cells[1], f"{spanish_verses[0].upper()}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
+        #space
+        row_cells = table.add_row().cells
+        style_cell_text(row_cells[0], "", font_name='Times New Roman', font_size=5)
+        style_cell_text(row_cells[1], "", font_name='Times New Roman', font_size=5)
+        #italics
+        row_cells = table.add_row().cells
+        style_cell_text(row_cells[0], f"{english_verses[1]}", font_name='Times New Roman', font_size=12, italic=True)
+        style_cell_text(row_cells[1], f"{spanish_verses[1]}", font_name='Times New Roman', font_size=12, italic=True)
+        #space
+        row_cells = table.add_row().cells
+        style_cell_text(row_cells[0], "", font_name='Times New Roman', font_size=5)
+        style_cell_text(row_cells[1], "", font_name='Times New Roman', font_size=5)
+        #to whom it may concern
+        row_cells = table.add_row().cells
+        style_cell_text(row_cells[0], f"{english_verses[2]}", font_name='Times New Roman', font_size=12)
+        style_cell_text(row_cells[1], f"{spanish_verses[2]}", font_name='Times New Roman', font_size=12)
+        # Add paragraphs without verse numvers
+        for i in range(3,8): #NOTE that english verses should be the same length as spanish verses
+            row_cells = table.add_row().cells
+            style_cell_text(row_cells[0], f"    {english_verses[i].strip()}")
+            style_cell_text(row_cells[1], f"    {spanish_verses[i].strip()}")
+        #Wilford Woodrfu
+        row_cells = table.add_row().cells
+        style_cell_text(row_cells[0], f"{english_verses[8].upper()}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.RIGHT)
+        style_cell_text(row_cells[1], f"{spanish_verses[8].upper()}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.RIGHT)
+        #Prez of church
+        row_cells = table.add_row().cells
+        style_cell_text(row_cells[0], f"{english_verses[9]}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.RIGHT)
+        style_cell_text(row_cells[1], f"{spanish_verses[9]}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.RIGHT)
+        #space
+        row_cells = table.add_row().cells
+        style_cell_text(row_cells[0], "", font_name='Times New Roman', font_size=5)
+        style_cell_text(row_cells[1], "", font_name='Times New Roman', font_size=5)
+        # Add paragraphs without verse numvers
+        for i in range(10,12): #NOTE that english verses should be the same length as spanish verses
+            row_cells = table.add_row().cells
+            style_cell_text(row_cells[0], f"    {english_verses[i].strip()}")
+            style_cell_text(row_cells[1], f"    {spanish_verses[i].strip()}")
+        #date
+        row_cells = table.add_row().cells
+        style_cell_text(row_cells[0], f"{english_verses[12]}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.RIGHT)
+        style_cell_text(row_cells[1], f"{spanish_verses[12]}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.RIGHT)
+        #space
+        row_cells = table.add_row().cells
+        style_cell_text(row_cells[0], "", font_name='Times New Roman', font_size=5)
+        style_cell_text(row_cells[1], "", font_name='Times New Roman', font_size=5)
+        #exceprts
+        row_cells = table.add_row().cells
+        style_cell_text(row_cells[0], f"{english_verses[13].upper()}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
+        style_cell_text(row_cells[1], f"{spanish_verses[13].upper()}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
+        # Add paragraphs without verse numvers
+        for i in range(14,len(english_verses)): #NOTE that english verses should be the same length as spanish verses
+            row_cells = table.add_row().cells
+            style_cell_text(row_cells[0], f"    {english_verses[i].strip()}")
+            style_cell_text(row_cells[1], f"    {spanish_verses[i].strip()}")
+        
+def create_od2():
+    add_horizontal_line(document)  # Line after book title
+    document.add_paragraph("")  # Space after book title
+
+    eng_path = f'dc-{leftLang}/od{2}.txt' #will need to put dc/ before
+    spa_path = f'dc-{rightLang}/od{2}.txt'
+
+    # Check if both files exist
+    if os.path.exists(eng_path) and os.path.exists(spa_path):
+        with open(eng_path, 'r', encoding='utf-8') as eng_file:
+            english_verses = [line.strip() for line in eng_file.readlines() if line.strip()]  # Removes new line characters
+
+        with open(spa_path, 'r', encoding='utf-8') as spa_file:
+            spanish_verses = [line.strip() for line in spa_file.readlines() if line.strip()]  # Removes new line characters
+
+        # Create a table with two columns
+        table = document.add_table(rows=0, cols=2)
+
+        # Add borders to the columns to create a vertical line between them
+        for i, cell in enumerate(table.columns[0].cells + table.columns[1].cells):
+            if cell._element.getparent().index(cell._element) % 2 == 0:  # First column
+                cell._element.get_or_add_tcPr().append(OxmlElement('w:tcBorders'))
+                borders = cell._element.find(qn('w:tcBorders'))
+                if borders is None:
+                    borders = OxmlElement('w:tcBorders')
+                    cell._element.get_or_add_tcPr().append(borders)
+                right_border = OxmlElement('w:right')
+                right_border.set(qn('w:val'), 'single')
+                right_border.set(qn('w:sz'), '4')
+                right_border.set(qn('w:space'), '0')
+                borders.append(right_border)
+            else:  # Second column
+                cell._element.get_or_add_tcPr().append(OxmlElement('w:tcBorders'))
+                borders = cell._element.find(qn('w:tcBorders'))
+                if borders is None:
+                    borders = OxmlElement('w:tcBorders')
+                    cell._element.get_or_add_tcPr().append(borders)
+                left_border = OxmlElement('w:left')
+                left_border.set(qn('w:val'), 'single')
+                left_border.set(qn('w:sz'), '4')
+                left_border.set(qn('w:space'), '0')
+                borders.append(left_border)
+
+        
+
+            add_horizontal_line(document)  # Line after chapter
+        
+        #offical declatation 2
+        row_cells = table.add_row().cells
+        style_cell_text(row_cells[0], f"{english_verses[0].upper()}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
+        style_cell_text(row_cells[1], f"{spanish_verses[0].upper()}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
+        #space
+        row_cells = table.add_row().cells
+        style_cell_text(row_cells[0], "", font_name='Times New Roman', font_size=5)
+        style_cell_text(row_cells[1], "", font_name='Times New Roman', font_size=5)
+        #italics
+        row_cells = table.add_row().cells
+        style_cell_text(row_cells[0], f"{english_verses[1]}", font_name='Times New Roman', font_size=12, italic=True)
+        style_cell_text(row_cells[1], f"{spanish_verses[1]}", font_name='Times New Roman', font_size=12, italic=True)
+        #space
+        row_cells = table.add_row().cells
+        style_cell_text(row_cells[0], "", font_name='Times New Roman', font_size=5)
+        style_cell_text(row_cells[1], "", font_name='Times New Roman', font_size=5)
+        #to whom it may concern
+        row_cells = table.add_row().cells
+        style_cell_text(row_cells[0], f"{english_verses[2]}", font_name='Times New Roman', font_size=12)
+        style_cell_text(row_cells[1], f"{spanish_verses[2]}", font_name='Times New Roman', font_size=12)
+        # Add paragraphs with indentation
+        for i in range(3,6): #NOTE that english verses should be the same length as spanish verses
+            row_cells = table.add_row().cells
+            style_cell_text(row_cells[0], f"    {english_verses[i].strip()}")
+            style_cell_text(row_cells[1], f"    {spanish_verses[i].strip()}")
+        #space
+        row_cells = table.add_row().cells
+        style_cell_text(row_cells[0], "", font_name='Times New Roman', font_size=5)
+        style_cell_text(row_cells[1], "", font_name='Times New Roman', font_size=5)
+        # Add paragraphs without indentation
+        for i in range(6,9): #NOTE that english verses should be the same length as spanish verses
+            row_cells = table.add_row().cells
+            style_cell_text(row_cells[0], f"{english_verses[i].strip()}")
+            style_cell_text(row_cells[1], f"{spanish_verses[i].strip()}")
+        # Add paragraphs with indentation
+        for i in range(9,13): #NOTE that english verses should be the same length as spanish verses
+            row_cells = table.add_row().cells
+            style_cell_text(row_cells[0], f"    {english_verses[i].strip()}")
+            style_cell_text(row_cells[1], f"    {spanish_verses[i].strip()}")
+        #sincerly yours
+        row_cells = table.add_row().cells
+        style_cell_text(row_cells[0], f"    {english_verses[13]}", font_name='Times New Roman', font_size=12)
+        style_cell_text(row_cells[1], f"    {spanish_verses[13]}", font_name='Times New Roman', font_size=12)
+        # first prez names
+        for i in range(14,17): #NOTE that english verses should be the same length as spanish verses
+            row_cells = table.add_row().cells
+            style_cell_text(row_cells[0], f"    {english_verses[i].upper()}")
+            style_cell_text(row_cells[1], f"    {spanish_verses[i].upper()}")
+        #the first presidency
+        row_cells = table.add_row().cells
+        style_cell_text(row_cells[0], f"    {english_verses[17]}")
+        style_cell_text(row_cells[1], f"    {spanish_verses[17]}")
+        #space
+        row_cells = table.add_row().cells
+        style_cell_text(row_cells[0], "", font_name='Times New Roman', font_size=5)
+        style_cell_text(row_cells[1], "", font_name='Times New Roman', font_size=5)
+        # Add paragraphs without verse numvers
+        for i in range(18,20): #NOTE that english verses should be the same length as spanish verses
+            row_cells = table.add_row().cells
+            style_cell_text(row_cells[0], f"    {english_verses[i].strip()}")
+            style_cell_text(row_cells[1], f"    {spanish_verses[i].strip()}")
+        #date
+        row_cells = table.add_row().cells
+        style_cell_text(row_cells[0], f"{english_verses[20]}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.RIGHT)
+        style_cell_text(row_cells[1], f"{spanish_verses[20]}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.RIGHT)
+               
 
 # Page numbers
 def add_page_numbers(document):
@@ -221,6 +522,10 @@ def add_page_numbers(document):
         run._element.append(field)
 
 # Add page numbers to the footer
+create_introduction()
+#create_sections()
+create_od1()
+create_od2()
 add_page_numbers(document)
 
 # Save the document
