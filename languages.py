@@ -159,3 +159,93 @@ languagesData= {
         "side-by-side-version": "Versione Fianco a Fianco"
     }
 }
+
+
+
+languageTranslations = {
+    "english": {
+        "english": "english",
+        "french": "french",
+        "spanish": "spanish",
+        "german": "german",
+        "portuguese": "portuguese",
+        "italian": "italian"
+    },
+    "spanish": {
+        "english": "inglés",
+        "french": "francés",
+        "spanish": "español",
+        "german": "alemán",
+        "portuguese": "portugués",
+        "italian": "italiano"
+    },
+    "french": {
+        "english": "anglais",
+        "spanish": "espagnol",
+        "french": "français",
+        "german": "allemand",
+        "portuguese": "portugais",
+        "italian": "italien"
+    },
+    "german": {
+        "english": "englisch",
+        "spanish": "spanisch",
+        "french": "französisch",
+        "german": "deutsch",
+        "portuguese": "portugiesisch",
+        "italian": "italienisch"
+    },
+    "portuguese": {
+        "english": "inglês",
+        "spanish": "espanhol",
+        "french": "francês",
+        "german": "alemão",
+        "portuguese": "português",
+        "italian": "italiano"
+    },
+    "italian": {
+        "english": "inglese",
+        "spanish": "spagnolo",
+        "french": "francese",
+        "german": "tedesco",
+        "portuguese": "portoghese",
+        "italian": "italiano"
+    }
+}
+
+
+
+
+languagesDataForDC = {
+    "english": {
+        "section": "section",
+        "dc": "Doctrine and Covenants",
+        "side-by-side-version": "Side by Side Version"
+    },
+    "spanish": {
+        "section": "sección",
+        "dc": "Doctrina y Convenios",
+        "side-by-side-version": "Versión Lado a Lado"
+    },
+    "french": {
+        "section": "section",
+        "dc": "Doctrine et Alliances",
+        "side-by-side-version": "Version Côte à Côte"
+    },
+    "german": {
+        "section": "Abschnitt",
+        "dc": "Lehre und Bündnisse",
+        "side-by-side-version": "Nebeneinander Version"
+    },
+    "portuguese": { 
+        "section": "seção",
+        "dc": "Doutrina e Convênios",
+        "side-by-side-version": "Versão Lado a Lado"
+    },
+    "italian": {
+        "section": "sezione",
+        "dc": "Dottrina e Alleanze",
+        "side-by-side-version": "Versione Fianco a Fianco"
+    }
+}
+

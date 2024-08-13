@@ -6,10 +6,10 @@ from docx.oxml.ns import qn  # Page numbers
 from docx.oxml import OxmlElement  # Horizontal line, borders
 from docx.enum.text import WD_ALIGN_PARAGRAPH  # For justification
 
-from languages import languagesData
+from languages import languagesDataForDC, languageTranslations
 
 leftLang = "english"
-rightLang = "english"
+rightLang = "spanish"
 numOfSections=138
 
 document = Document()  # Create a new Word document
@@ -87,46 +87,32 @@ def add_title_page(doc):
     # Add the main title in large, bold font
     main_title = doc.add_paragraph()
     main_title.alignment = WD_ALIGN_PARAGRAPH.CENTER  # Center alignment
-    run = main_title.add_run(f'{languagesData[leftLang]["book-of-mormon"]}')
+    run = main_title.add_run(f'{languagesDataForDC[leftLang]["dc"]}')
     run.font.name = 'Times New Roman'
     run.font.size = Pt(36)
     run.bold = True
-    # Add subtitle in a slightly smaller font and italics
-    subtitle = doc.add_paragraph()
-    subtitle.alignment = WD_ALIGN_PARAGRAPH.CENTER  # Center alignment
-    run = subtitle.add_run(f'{languagesData[leftLang]["another-testament-of-jesus-christ"]}')
-    run.font.name = 'Times New Roman'
-    run.font.size = Pt(24)
-    run.italic = True
     # Add spacing between title and subtitle
     doc.add_paragraph("\n\n")
     # Book of Mormon in second language
     second_title = doc.add_paragraph()
     second_title.alignment = WD_ALIGN_PARAGRAPH.CENTER  # Center alignment
-    run = second_title.add_run(f'{languagesData[rightLang]["book-of-mormon"]}')
+    run = second_title.add_run(f'{languagesDataForDC[rightLang]["dc"]}')
     run.font.name = 'Times New Roman'
     run.font.size = Pt(36)
     run.bold = True
-    # Add another subtitle for the translation language in a smaller font
-    subtitle_3 = doc.add_paragraph()
-    subtitle_3.alignment = WD_ALIGN_PARAGRAPH.CENTER  # Center alignment
-    run = subtitle_3.add_run(f'{languagesData[rightLang]["another-testament-of-jesus-christ"]}')
-    run.font.name = 'Times New Roman'
-    run.font.size = Pt(24)
-    run.italic = True
     # Add more spacing before the side-by-side description
     doc.add_paragraph("\n\n")
     # Add a description below the titles
     description = doc.add_paragraph()
     description.alignment = WD_ALIGN_PARAGRAPH.CENTER  # Center alignment
-    run = description.add_run(f'{languagesData[leftLang]["side-by-side-version"]}')
+    run = description.add_run(f'{languagesDataForDC[leftLang]["side-by-side-version"]}')
     run.font.name = 'Times New Roman'
     run.font.size = Pt(18)
     run.bold = True
     # Add language pairing description in smaller font
     language_pair = doc.add_paragraph()
     language_pair.alignment = WD_ALIGN_PARAGRAPH.CENTER  # Center alignment
-    run = language_pair.add_run(f'{languagesData[leftLang][leftLang].capitalize()} | {languagesData[rightLang][rightLang].capitalize()}')
+    run = language_pair.add_run(f'{languageTranslations[leftLang][leftLang].capitalize()} | {languageTranslations[rightLang][rightLang].capitalize()}')
     run.font.name = 'Times New Roman'
     run.font.size = Pt(16)
     # Add more spacing before the page break
@@ -134,15 +120,12 @@ def add_title_page(doc):
     # Page break
     doc.add_page_break()
 
-#add_title_page(document) # Add title page
-
-#introduction
 def create_introduction():
     add_horizontal_line(document)  # Line after book title
     document.add_paragraph("")  # Space after book title
 
-    eng_path = f'dc-{leftLang}/{0}.txt' #will need to put dc/ before
-    spa_path = f'dc-{rightLang}/{0}.txt'
+    eng_path = f'dc2/dc-{leftLang}/{0}.txt' #will need to put dc/ before
+    spa_path = f'dc2/dc-{rightLang}/{0}.txt'
 
     # Check if both files exist
     if os.path.exists(eng_path) and os.path.exists(spa_path):
@@ -218,12 +201,11 @@ def create_introduction():
 
 def create_sections():
     # Iterate through each section
-    for chapter in range(1,numOfSections):
+    for chapter in range(1,numOfSections+1):
         add_horizontal_line(document)  # Line after book title
-        document.add_paragraph("")  # Space after book title
 
-        eng_path = f'dc-{leftLang}/{chapter}.txt' #will need to put dc/ before
-        spa_path = f'dc-{rightLang}/{chapter}.txt'
+        eng_path = f'dc2/dc-{leftLang}/{chapter}.txt'
+        spa_path = f'dc2/dc-{rightLang}/{chapter}.txt'
         
         # Check if both files exist
         if os.path.exists(eng_path) and os.path.exists(spa_path):
@@ -267,8 +249,8 @@ def create_sections():
             
             #CHAPTER 1
             row_cells = table.add_row().cells
-            style_cell_text(row_cells[0], f"{languagesData[leftLang]['chapter'].upper()} {chapter}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
-            style_cell_text(row_cells[1], f"{languagesData[rightLang]['chapter'].upper()} {chapter}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
+            style_cell_text(row_cells[0], f"{languagesDataForDC[leftLang]['section'].upper()} {chapter}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
+            style_cell_text(row_cells[1], f"{languagesDataForDC[rightLang]['section'].upper()} {chapter}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
             # heading
             row_cells = table.add_row().cells
             style_cell_text(row_cells[0], f"{english_verses[0].strip()}", font_name='Times New Roman', font_size=12, italic=True)
@@ -292,8 +274,8 @@ def create_od1():
     add_horizontal_line(document)  # Line after book title
     document.add_paragraph("")  # Space after book title
 
-    eng_path = f'dc-{leftLang}/od{1}.txt' #will need to put dc/ before
-    spa_path = f'dc-{rightLang}/od{1}.txt'
+    eng_path = f'dc2/dc-{leftLang}/od{1}.txt' #will need to put dc/ before
+    spa_path = f'dc2/dc-{rightLang}/od{1}.txt'
 
     # Check if both files exist
     if os.path.exists(eng_path) and os.path.exists(spa_path):
@@ -399,8 +381,8 @@ def create_od2():
     add_horizontal_line(document)  # Line after book title
     document.add_paragraph("")  # Space after book title
 
-    eng_path = f'dc-{leftLang}/od{2}.txt' #will need to put dc/ before
-    spa_path = f'dc-{rightLang}/od{2}.txt'
+    eng_path = f'dc2/dc-{leftLang}/od{2}.txt' #will need to put dc/ before
+    spa_path = f'dc2/dc-{rightLang}/od{2}.txt'
 
     # Check if both files exist
     if os.path.exists(eng_path) and os.path.exists(spa_path):
@@ -521,9 +503,10 @@ def add_page_numbers(document):
         field.set(qn('w:instr'), 'PAGE')  # PAGE is the instruction for page number
         run._element.append(field)
 
-# Add page numbers to the footer
+
+add_title_page(document) 
 create_introduction()
-#create_sections()
+create_sections()
 create_od1()
 create_od2()
 add_page_numbers(document)
