@@ -8,11 +8,12 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH  # For justification
 
 from languages import languagesData
 
-leftLang = "english"
+leftLang = "portuguese"
 rightLang = "spanish"
 
-books = ["1-nephi", "2-nephi", "jacob", "enos", "jarom", "omni", "words-of-mormon", "mosiah", "alma", "helaman", "3-nephi", "4-nephi", "mormon", "ether", "moroni"]
+books = ["title","introduction", "three","eight","js", "1-nephi", "2-nephi", "jacob", "enos", "jarom", "omni", "words-of-mormon", "mosiah", "alma", "helaman", "3-nephi", "4-nephi", "mormon", "ether", "moroni"]
 chapters = {
+    "title":1,"introduction":1,"three":1,"eight":1,"js":1,
     "1-nephi": 22, "2-nephi": 33, "jacob": 7, "enos": 1, "jarom": 1, "omni": 1, "words-of-mormon": 1,
     "mosiah": 29, "alma": 63, "helaman": 16, "3-nephi": 30, "4-nephi": 1,
     "mormon": 9, "ether": 15, "moroni": 10
@@ -33,7 +34,7 @@ def style_cell_text(cell, text, font_name='Times New Roman', font_size=12, align
     # Clear existing text
     cell.text = ''
     # Create a new run for the cell
-    run = cell.paragraphs[0].add_run(text.strip())
+    run = cell.paragraphs[0].add_run(text)
     # Apply the styles
     run.font.name = font_name
     run.font.size = Pt(font_size)
@@ -93,14 +94,14 @@ def add_title_page(doc):
     # Add the main title in large, bold font
     main_title = doc.add_paragraph()
     main_title.alignment = WD_ALIGN_PARAGRAPH.CENTER  # Center alignment
-    run = main_title.add_run(f'{languagesData[rightLang]["book-of-mormon"]}')
+    run = main_title.add_run(f'{languagesData[leftLang]["book-of-mormon"]}')
     run.font.name = 'Times New Roman'
     run.font.size = Pt(36)
     run.bold = True
     # Add subtitle in a slightly smaller font and italics
     subtitle = doc.add_paragraph()
     subtitle.alignment = WD_ALIGN_PARAGRAPH.CENTER  # Center alignment
-    run = subtitle.add_run(f'{languagesData[rightLang]["another-testament-of-jesus-christ"]}')
+    run = subtitle.add_run(f'{languagesData[leftLang]["another-testament-of-jesus-christ"]}')
     run.font.name = 'Times New Roman'
     run.font.size = Pt(24)
     run.italic = True
@@ -109,14 +110,14 @@ def add_title_page(doc):
     # Book of Mormon in second language
     second_title = doc.add_paragraph()
     second_title.alignment = WD_ALIGN_PARAGRAPH.CENTER  # Center alignment
-    run = second_title.add_run(f'{languagesData[leftLang]["book-of-mormon"]}')
+    run = second_title.add_run(f'{languagesData[rightLang]["book-of-mormon"]}')
     run.font.name = 'Times New Roman'
     run.font.size = Pt(36)
     run.bold = True
     # Add another subtitle for the translation language in a smaller font
     subtitle_3 = doc.add_paragraph()
     subtitle_3.alignment = WD_ALIGN_PARAGRAPH.CENTER  # Center alignment
-    run = subtitle_3.add_run(f'{languagesData[leftLang]["another-testament-of-jesus-christ"]}')
+    run = subtitle_3.add_run(f'{languagesData[rightLang]["another-testament-of-jesus-christ"]}')
     run.font.name = 'Times New Roman'
     run.font.size = Pt(24)
     run.italic = True
@@ -647,6 +648,93 @@ for book in books:
                         row_cells = table.add_row().cells
                         style_cell_text(row_cells[0], f"{i} {english_verses[i].strip()}")
                         style_cell_text(row_cells[1], f"{i} {spanish_verses[i].strip()}")
+            if book=="title":
+                 # the book fo mormon
+                row_cells = table.add_row().cells
+                style_cell_text(row_cells[0], f"{english_verses[0].strip().upper()}", font_name='Times New Roman', font_size=15, alignment=WD_ALIGN_PARAGRAPH.CENTER)
+                style_cell_text(row_cells[1], f"{spanish_verses[0].strip().upper()}", font_name='Times New Roman', font_size=15, alignment=WD_ALIGN_PARAGRAPH.CENTER)
+                # account taken from hand of mormon
+                row_cells = table.add_row().cells
+                style_cell_text(row_cells[0], f"{english_verses[1].strip().upper()}", font_name='Times New Roman', font_size=11, alignment=WD_ALIGN_PARAGRAPH.CENTER)
+                style_cell_text(row_cells[1], f"{spanish_verses[1].strip().upper()}", font_name='Times New Roman', font_size=11, alignment=WD_ALIGN_PARAGRAPH.CENTER)
+                #space
+                row_cells = table.add_row().cells
+                style_cell_text(row_cells[0], "", font_name='Times New Roman', font_size=5)
+                style_cell_text(row_cells[1], "", font_name='Times New Roman', font_size=5)
+                    
+                for i in range(2, len(english_verses)-1): #NOTE that english verses should be the same length as spanish verses
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"  {english_verses[i].strip()}")
+                    style_cell_text(row_cells[1], f"  {spanish_verses[i].strip()}")
+                # translated by josepg smith jr
+                row_cells = table.add_row().cells
+                style_cell_text(row_cells[0], f"{english_verses[-1].strip().upper()}", font_name='Times New Roman', font_size=11, alignment=WD_ALIGN_PARAGRAPH.CENTER)
+                style_cell_text(row_cells[1], f"{spanish_verses[-1].strip().upper()}", font_name='Times New Roman', font_size=11, alignment=WD_ALIGN_PARAGRAPH.CENTER)
+            if book=="introduction":
+                 # introduction
+                row_cells = table.add_row().cells
+                style_cell_text(row_cells[0], f"{english_verses[0].strip().upper()}", font_name='Times New Roman', font_size=15, alignment=WD_ALIGN_PARAGRAPH.CENTER)
+                style_cell_text(row_cells[1], f"{spanish_verses[0].strip().upper()}", font_name='Times New Roman', font_size=15, alignment=WD_ALIGN_PARAGRAPH.CENTER)
+                #space
+                row_cells = table.add_row().cells
+                style_cell_text(row_cells[0], "", font_name='Times New Roman', font_size=5)
+                style_cell_text(row_cells[1], "", font_name='Times New Roman', font_size=5)
+                for i in range(1, len(english_verses)): #NOTE that english verses should be the same length as spanish verses
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"    {english_verses[i]}")
+                    style_cell_text(row_cells[1], f"    {spanish_verses[i]}")
+            if book=="three":
+                 # three witnesses
+                row_cells = table.add_row().cells
+                style_cell_text(row_cells[0], f"{english_verses[0].upper()}", font_name='Times New Roman', font_size=15, alignment=WD_ALIGN_PARAGRAPH.CENTER)
+                style_cell_text(row_cells[1], f"{spanish_verses[0].upper()}", font_name='Times New Roman', font_size=15, alignment=WD_ALIGN_PARAGRAPH.CENTER)
+                #space
+                row_cells = table.add_row().cells
+                style_cell_text(row_cells[0], "", font_name='Times New Roman', font_size=5)
+                style_cell_text(row_cells[1], "", font_name='Times New Roman', font_size=5)
+                #their testimony
+                for i in range(1, len(english_verses)-3): #NOTE that english verses should be the same length as spanish verses
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"    {english_verses[i]}")
+                    style_cell_text(row_cells[1], f"    {spanish_verses[i]}")
+                #each of their names
+                for i in range(len(english_verses)-3, len(english_verses)): #NOTE that english verses should be the same length as spanish verses
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"{english_verses[i]}", alignment=WD_ALIGN_PARAGRAPH.RIGHT)
+                    style_cell_text(row_cells[1], f"{spanish_verses[i]}", alignment=WD_ALIGN_PARAGRAPH.RIGHT)
+            if book=="eight":
+                 # eight witnesses
+                row_cells = table.add_row().cells
+                style_cell_text(row_cells[0], f"{english_verses[0].upper()}", font_name='Times New Roman', font_size=15, alignment=WD_ALIGN_PARAGRAPH.CENTER)
+                style_cell_text(row_cells[1], f"{spanish_verses[0].upper()}", font_name='Times New Roman', font_size=15, alignment=WD_ALIGN_PARAGRAPH.CENTER)
+                #space
+                row_cells = table.add_row().cells
+                style_cell_text(row_cells[0], "", font_name='Times New Roman', font_size=5)
+                style_cell_text(row_cells[1], "", font_name='Times New Roman', font_size=5)
+                #their testimony
+                for i in range(1, len(english_verses)-8): #NOTE that english verses should be the same length as spanish verses
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"    {english_verses[i]}")
+                    style_cell_text(row_cells[1], f"    {spanish_verses[i]}")
+                #each of their names
+                for i in range(len(english_verses)-8, len(english_verses)): #NOTE that english verses should be the same length as spanish verses
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"{english_verses[i]}", alignment=WD_ALIGN_PARAGRAPH.RIGHT)
+                    style_cell_text(row_cells[1], f"{spanish_verses[i]}", alignment=WD_ALIGN_PARAGRAPH.RIGHT)
+            if book=="js":
+                # testimony of prophet josehp
+                row_cells = table.add_row().cells
+                style_cell_text(row_cells[0], f"{english_verses[0].strip().upper()}", font_name='Times New Roman', font_size=15, alignment=WD_ALIGN_PARAGRAPH.CENTER)
+                style_cell_text(row_cells[1], f"{spanish_verses[0].strip().upper()}", font_name='Times New Roman', font_size=15, alignment=WD_ALIGN_PARAGRAPH.CENTER)
+                #space
+                row_cells = table.add_row().cells
+                style_cell_text(row_cells[0], "", font_name='Times New Roman', font_size=5)
+                style_cell_text(row_cells[1], "", font_name='Times New Roman', font_size=5)
+                for i in range(1, len(english_verses)): #NOTE that english verses should be the same length as spanish verses
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"    {english_verses[i]}")
+                    style_cell_text(row_cells[1], f"    {spanish_verses[i]}")
+
 
             add_horizontal_line(document)  # Line after chapter
         
