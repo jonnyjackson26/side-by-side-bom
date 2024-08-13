@@ -13,9 +13,9 @@ rightLang = "spanish"
 
 books = ["1-nephi", "2-nephi", "jacob", "enos", "jarom", "omni", "words-of-mormon", "mosiah", "alma", "helaman", "3-nephi", "4-nephi", "mormon", "ether", "moroni"]
 chapters = {
-    "1-nephi": 1, "2-nephi": 1, "jacob": 1, "enos": 1, "jarom": 1, "omni": 1, "words-of-mormon": 1,
-    "mosiah": 1, "alma": 1, "helaman": 1, "3-nephi": 1, "4-nephi": 1,
-    "mormon": 1, "ether": 1, "moroni": 1
+    "1-nephi": 22, "2-nephi": 33, "jacob": 7, "enos": 1, "jarom": 1, "omni": 1, "words-of-mormon": 1,
+    "mosiah": 29, "alma": 63, "helaman": 16, "3-nephi": 30, "4-nephi": 1,
+    "mormon": 9, "ether": 15, "moroni": 10
 }
 
 document = Document()  # Create a new Word document
@@ -149,8 +149,8 @@ for book in books:
 
     # Iterate through each chapter
     for chapter in range(1, chapters[book] + 1):
-        eng_path = f'bom2/bom-{leftLang}/{book}/{chapter}.txt'
-        spa_path = f'bom2/bom-{rightLang}/{book}/{chapter}.txt'
+        eng_path = f'bom3/bom-{leftLang}/{book}/{chapter}.txt'
+        spa_path = f'bom3/bom-{rightLang}/{book}/{chapter}.txt'
         
         # Check if both files exist
         if os.path.exists(eng_path) and os.path.exists(spa_path):
@@ -360,6 +360,34 @@ for book in books:
                         row_cells = table.add_row().cells
                         style_cell_text(row_cells[0], f"{i-2} {english_verses[i].strip()}")
                         style_cell_text(row_cells[1], f"{i-2} {spanish_verses[i].strip()}")
+                elif chapter==7 or chapter==13:
+                    # the words of alma...
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"{english_verses[0].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+                    style_cell_text(row_cells[1], f"{spanish_verses[0].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+                    # comprising ch7
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"{english_verses[1].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+                    style_cell_text(row_cells[1], f"{spanish_verses[1].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+                    #space
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], "", font_name='Times New Roman', font_size=5)
+                    style_cell_text(row_cells[1], "", font_name='Times New Roman', font_size=5)
+                    # Have the first row of the columns be "Chapter X" and "Capítulo X"
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"{languagesData[leftLang]['chapter'].upper()} {chapter}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
+                    style_cell_text(row_cells[1], f"{languagesData[rightLang]['chapter'].upper()} {chapter}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
+
+                    # Add chapter headings (the 0th index of the verses list is added with italics)
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"{english_verses[2].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+                    style_cell_text(row_cells[1], f"{spanish_verses[2].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+
+                    # Add verses to the table with verse numbers
+                    for i in range(3, len(english_verses)): #NOTE that english verses should be the same length as spanish verses
+                        row_cells = table.add_row().cells
+                        style_cell_text(row_cells[0], f"{i-2} {english_verses[i].strip()}")
+                        style_cell_text(row_cells[1], f"{i-2} {spanish_verses[i].strip()}")
 
                 else: #normal chapter with just one line of chapter intro and the other lines are verses
                     # Have the first row of the columns be "Chapter X" and "Capítulo X"
@@ -406,7 +434,34 @@ for book in books:
                         row_cells = table.add_row().cells
                         style_cell_text(row_cells[0], f"{i-2} {english_verses[i].strip()}")
                         style_cell_text(row_cells[1], f"{i-2} {spanish_verses[i].strip()}")
+                elif chapter==7 or chapter==5 or chapter==36 or chapter==9 or chapter==45 or chapter==39 or chapter==38 or chapter==21 or chapter==17: #two line of italics before
+                    # the words of alma...
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"{english_verses[0].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+                    style_cell_text(row_cells[1], f"{spanish_verses[0].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+                    # comprising ch7
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"{english_verses[1].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+                    style_cell_text(row_cells[1], f"{spanish_verses[1].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+                    #space
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], "", font_name='Times New Roman', font_size=5)
+                    style_cell_text(row_cells[1], "", font_name='Times New Roman', font_size=5)
+                    # Have the first row of the columns be "Chapter X" and "Capítulo X"
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"{languagesData[leftLang]['chapter'].upper()} {chapter}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
+                    style_cell_text(row_cells[1], f"{languagesData[rightLang]['chapter'].upper()} {chapter}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
 
+                    # Add chapter headings (the 0th index of the verses list is added with italics)
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"{english_verses[2].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+                    style_cell_text(row_cells[1], f"{spanish_verses[2].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+
+                    # Add verses to the table with verse numbers
+                    for i in range(3, len(english_verses)): #NOTE that english verses should be the same length as spanish verses
+                        row_cells = table.add_row().cells
+                        style_cell_text(row_cells[0], f"{i-2} {english_verses[i].strip()}")
+                        style_cell_text(row_cells[1], f"{i-2} {spanish_verses[i].strip()}")
                 else: #normal chapter with just one line of chapter intro and the other lines are verses
                     # Have the first row of the columns be "Chapter X" and "Capítulo X"
                     row_cells = table.add_row().cells
@@ -456,6 +511,34 @@ for book in books:
                         row_cells = table.add_row().cells
                         style_cell_text(row_cells[0], f"{i-3} {english_verses[i].strip()}")
                         style_cell_text(row_cells[1], f"{i-3} {spanish_verses[i].strip()}")
+                elif chapter==11: #two lines of italics
+                    # jesus christ did show ...
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"{english_verses[0].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+                    style_cell_text(row_cells[1], f"{spanish_verses[0].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+                    # comprising ch7
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"{english_verses[1].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+                    style_cell_text(row_cells[1], f"{spanish_verses[1].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+                    #space
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], "", font_name='Times New Roman', font_size=5)
+                    style_cell_text(row_cells[1], "", font_name='Times New Roman', font_size=5)
+                    # Have the first row of the columns be "Chapter X" and "Capítulo X"
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"{languagesData[leftLang]['chapter'].upper()} {chapter}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
+                    style_cell_text(row_cells[1], f"{languagesData[rightLang]['chapter'].upper()} {chapter}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
+
+                    # Add chapter headings (the 0th index of the verses list is added with italics)
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"{english_verses[2].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+                    style_cell_text(row_cells[1], f"{spanish_verses[2].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+
+                    # Add verses to the table with verse numbers
+                    for i in range(3, len(english_verses)): #NOTE that english verses should be the same length as spanish verses
+                        row_cells = table.add_row().cells
+                        style_cell_text(row_cells[0], f"{i-2} {english_verses[i].strip()}")
+                        style_cell_text(row_cells[1], f"{i-2} {spanish_verses[i].strip()}")
 
                 else: #normal chapter with just one line of chapter intro and the other lines are verses
                     # Have the first row of the columns be "Chapter X" and "Capítulo X"
@@ -498,7 +581,56 @@ for book in books:
                         row_cells = table.add_row().cells
                         style_cell_text(row_cells[0], f"{i-2} {english_verses[i].strip()}")
                         style_cell_text(row_cells[1], f"{i-2} {spanish_verses[i].strip()}")
+                elif book=="moroni" and chapter==10: #the end text
+                    # Have the first row of the columns be "Chapter X" and "Capítulo X"
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"{languagesData[leftLang]['chapter'].upper()} {chapter}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
+                    style_cell_text(row_cells[1], f"{languagesData[rightLang]['chapter'].upper()} {chapter}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
 
+                    # Add chapter headings (the 0th index of the verses list is added with italics)
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"{english_verses[0].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+                    style_cell_text(row_cells[1], f"{spanish_verses[0].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+
+                    # Add verses to the table with verse numbers
+                    for i in range(1, len(english_verses)-1): #NOTE that english verses should be the same length as spanish verses
+                        row_cells = table.add_row().cells
+                        style_cell_text(row_cells[0], f"{i} {english_verses[i].strip()}")
+                        style_cell_text(row_cells[1], f"{i} {spanish_verses[i].strip()}")
+
+                    #the end text
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"{english_verses[-1].strip().upper()}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER)
+                    style_cell_text(row_cells[1], f"{spanish_verses[-1].strip().upper()}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER)
+                elif (book=="mosiah" and (chapter==9 or chapter==23)) or (book=="moroni" and chapter==9): #two line of italics before
+                    # the words of alma...
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"{english_verses[0].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+                    style_cell_text(row_cells[1], f"{spanish_verses[0].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+                    # comprising ch7
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"{english_verses[1].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+                    style_cell_text(row_cells[1], f"{spanish_verses[1].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+                    #space
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], "", font_name='Times New Roman', font_size=5)
+                    style_cell_text(row_cells[1], "", font_name='Times New Roman', font_size=5)
+                    # Have the first row of the columns be "Chapter X" and "Capítulo X"
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"{languagesData[leftLang]['chapter'].upper()} {chapter}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
+                    style_cell_text(row_cells[1], f"{languagesData[rightLang]['chapter'].upper()} {chapter}", font_name='Times New Roman', font_size=12, alignment=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
+
+                    # Add chapter headings (the 0th index of the verses list is added with italics)
+                    row_cells = table.add_row().cells
+                    style_cell_text(row_cells[0], f"{english_verses[2].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+                    style_cell_text(row_cells[1], f"{spanish_verses[2].strip()}", font_name='Times New Roman', font_size=12, italic=True)
+
+                    # Add verses to the table with verse numbers
+                    for i in range(3, len(english_verses)): #NOTE that english verses should be the same length as spanish verses
+                        row_cells = table.add_row().cells
+                        style_cell_text(row_cells[0], f"{i-2} {english_verses[i].strip()}")
+                        style_cell_text(row_cells[1], f"{i-2} {spanish_verses[i].strip()}")
+                
                 else: #normal chapter with just one line of chapter intro and the other lines are verses
                     # Have the first row of the columns be "Chapter X" and "Capítulo X"
                     row_cells = table.add_row().cells
